@@ -1,0 +1,31 @@
+group 'org.simonscode'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+jar {
+    from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+dependencies {
+    compile group: 'org.telegram', name: 'telegrambots', version: '3.6'
+    compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
+    compile 'org.jsoup:jsoup:1.11.2'
+    compile 'com.google.cloud:google-cloud:+'
+    compile 'com.google.cloud:google-cloud-vision:1.14.0'
+    compile group: 'com.google.auto.service', name: 'auto-service', version: '1.0-rc4'
+    compile group: 'com.google.apis', name: 'google-api-services-vision', version: 'v1-rev373-1.23.0'
+    compileOnly group: 'org.simonscode', name: 'telegrambots.framework', version: '3.0-SNAPSHOT'
+    testCompile group: 'org.telegram', name: 'telegrambots', version: '3.6'
+    testCompile group: 'org.simonscode', name: 'telegrambots.framework', version: '3.0-SNAPSHOT'
+}
