@@ -1,9 +1,6 @@
 import com.google.auto.service.AutoService;
 import org.apache.commons.io.FileUtils;
-import org.simonscode.telegrambots.framework.Bot;
-import org.simonscode.telegrambots.framework.Module;
-import org.simonscode.telegrambots.framework.ModuleInfo;
-import org.simonscode.telegrambots.framework.State;
+import org.simonscode.telegrambots.framework.*;
 import org.telegram.telegrambots.api.methods.GetFile;
 import org.telegram.telegrambots.api.objects.Message;
 import org.telegram.telegrambots.api.objects.PhotoSize;
@@ -18,7 +15,7 @@ import java.nio.file.Path;
 import java.util.Comparator;
 
 @AutoService(Module.class)
-public class PandorasBox implements Module {
+public class PandorasBox extends ModuleAdapter {
     private static final String NAME = "PBPB-09";
     private static final String VERSION = "0.0.1-SNAPSHOT";
     private static final String AUTHOR = "N.M. Overkamp - CFO CG";
@@ -39,7 +36,6 @@ public class PandorasBox implements Module {
             e.printStackTrace();
         }
         pandoraWebsitePoster = new PosterMock();
-
     }
 
     @Override
@@ -47,11 +43,6 @@ public class PandorasBox implements Module {
         //TODO read data from files
         //TODO initialize ocrProvider
         //TODO initialize pandoraWebsitePoster
-
-    }
-
-    @Override
-    public void postLoad(Bot bot) {
 
     }
 
@@ -86,25 +77,5 @@ public class PandorasBox implements Module {
                 }
             }
         }
-    }
-
-    @Override
-    public void preUnload(Bot bot) {
-        saveState(bot);
-    }
-
-    @Override
-    public void postUnload(Bot bot) {
-
-    }
-
-    @Override
-    public State saveState(Bot bot) {
-        return null;
-    }
-
-    @Override
-    public Class<? extends State> getStateType() {
-        return null;
     }
 }
