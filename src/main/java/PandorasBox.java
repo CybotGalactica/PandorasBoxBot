@@ -1,6 +1,8 @@
+import com.google.auto.service.AutoService;
 import org.apache.commons.io.FileUtils;
 import org.simonscode.telegrambots.framework.Bot;
 import org.simonscode.telegrambots.framework.Module;
+import org.simonscode.telegrambots.framework.ModuleInfo;
 import org.simonscode.telegrambots.framework.State;
 import org.telegram.telegrambots.api.methods.GetFile;
 import org.telegram.telegrambots.api.objects.Message;
@@ -15,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Comparator;
 
+@AutoService(Module.class)
 public class PandorasBox implements Module {
     private static final String NAME = "PBPB-09";
     private static final String VERSION = "0.0.1-SNAPSHOT";
@@ -24,18 +27,8 @@ public class PandorasBox implements Module {
     private PandoraWebsitePoster pandoraWebsitePoster;
 
     @Override
-    public String getName() {
-        return NAME;
-    }
-
-    @Override
-    public String getVersion() {
-        return VERSION;
-    }
-
-    @Override
-    public String getAuthor() {
-        return AUTHOR;
+    public ModuleInfo getModuleInfo() {
+        return new ModuleInfo(NAME, VERSION, AUTHOR, ModuleInfo.InstanciationPereference.SINGLE_INSTANCE_ACROSS_ALL_BOTS);
     }
 
     @Override
