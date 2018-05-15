@@ -1,3 +1,5 @@
+package org.nielsoverkamp.pandorabox.pbpb09.K9VS;
+
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.json.JsonFactory;
@@ -6,7 +8,6 @@ import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
 import com.google.api.services.vision.v1.model.*;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -34,7 +35,7 @@ public class GCVision implements OCRProvider {
                     .setApplicationName("Telegram Bot")
                     .build();
         } catch (GeneralSecurityException | IOException e) {
-            throw new OCRException("There was an error while initializing Google Butt Vision");
+            throw new OCRException("There was an error while initializing Google Butt Vision: " + e.getMessage());
         }
     }
 

@@ -1,0 +1,56 @@
+id,name              ,latitude,longitude,osm_url
+0 ,O&O Plein         ,52.23885,6.8564   ,http://www.openstreetmap.org/way/4395322
+2 ,Spiegel           ,        ,         ,http://www.openstreetmap.org/way/269843758
+3 ,Vleugel           ,        ,         ,http://www.openstreetmap.org/way/269843774
+4 ,Carillon          ,        ,         ,http://www.openstreetmap.org/node/411492426
+5 ,Garage            ,        ,         ,http://www.openstreetmap.org/way/269843546
+6 ,Paviljoen         ,        ,         ,http://www.openstreetmap.org/way/269843638
+7 ,Seinhuis          ,        ,         ,http://www.openstreetmap.org/way/269843748
+8 ,Hogedruklab       ,        ,         ,http://www.openstreetmap.org/way/269843566
+9 ,Citadel           ,        ,         ,http://www.openstreetmap.org/way/399276558
+10,Ravelijn          ,        ,         ,http://www.openstreetmap.org/way/269843643
+11,Zilverling        ,        ,         ,http://www.openstreetmap.org/relation/3611484
+12,Waaier            ,        ,         ,https://www.openstreetmap.org/way/269843776
+13,Hal B             ,        ,         ,https://www.openstreetmap.org/way/269843554
+14,Teehuis           ,        ,         ,https://www.openstreetmap.org/way/269843769
+15,Carré             ,        ,         ,https://www.openstreetmap.org/relation/3611485
+16,Nanolab           ,        ,         ,https://www.openstreetmap.org/node/2749690103
+17,The Gallery       ,        ,         ,https://www.openstreetmap.org/way/269843772
+20,Horsttoren        ,        ,         ,https://www.openstreetmap.org/way/269843579
+21,Horstring         ,        ,         ,https://www.openstreetmap.org/relation/3611481
+22,Westhorst         ,        ,         ,https://www.openstreetmap.org/way/269843777
+23,Kleinhorst        ,        ,         ,https://www.openstreetmap.org/way/269843607
+24,Noordhorst        ,        ,         ,https://www.openstreetmap.org/way/269843633
+26,Oosthorst         ,        ,         ,https://www.openstreetmap.org/way/269843636
+27,Meander           ,        ,         ,https://www.openstreetmap.org/way/269843616
+28,Zuidhorst         ,        ,         ,https://www.openstreetmap.org/way/269843779
+29,Buitenhorst       ,        ,         ,https://www.openstreetmap.org/way/269843495
+30,Keet              ,        ,         ,https://www.openstreetmap.org/way/269845048
+31,Windpark          ,        ,         ,https://www.openstreetmap.org/way/269844407
+32,BMC               ,        ,         ,https://www.openstreetmap.org/way/269843488
+39,Trial-terrein     ,        ,         ,https://www.openstreetmap.org/#map=19/52.24154/6.86346
+40,Erve Holzik       ,        ,         ,https://www.openstreetmap.org/way/269843534
+41,Cubicus           ,        ,         ,https://www.openstreetmap.org/way/269843502
+42,Faculty Club      ,        ,         ,https://www.openstreetmap.org/way/269843541
+43,Schuur            ,        ,         ,https://www.openstreetmap.org/way/269843745
+44,Drienerburght     ,        ,         ,https://www.openstreetmap.org/way/269843527
+45,Hogekamp          ,        ,         ,https://www.openstreetmap.org/way/269843568
+46,High Tech Factory ,        ,         ,https://www.openstreetmap.org/way/269843560
+47,Vrijhof           ,52.2435 ,6.85317  ,http://www.openstreetmap.org/way/269843775
+48,Bastille          ,        ,         ,https://www.openstreetmap.org/way/269843483
+49,Sportcentrum      ,        ,         ,https://www.openstreetmap.org/way/269843764
+51,Sky               ,        ,         ,https://www.openstreetmap.org/way/269843751
+53,Box               ,        ,         ,https://www.openstreetmap.org/relation/3611487
+56,Openluchttheater  ,        ,         ,https://www.openstreetmap.org/way/44103743
+57,Zwembad           ,        ,         ,https://www.openstreetmap.org/way/269843780
+58,Sleutel           ,        ,         ,https://www.openstreetmap.org/relation/3611486
+59,Mondriaan         ,        ,         ,https://www.openstreetmap.org/way/269843624
+60,Vlinder           ,        ,         ,https://www.openstreetmap.org/way/269843519
+61,Linde             ,        ,         ,https://www.openstreetmap.org/way/269843742
+62,Boederij Bosch    ,        ,         ,https://www.openstreetmap.org/way/269843490
+63,Blokhutten / Stall,        ,         ,https://www.openstreetmap.org/way/269844641
+64,Tennispark        ,        ,         ,https://www.openstreetmap.org/way/269843771
+65,Logica            ,        ,         ,https://www.openstreetmap.org/way/269843612
+66,BTC               ,        ,         ,https://www.openstreetmap.org/way/270585298
+69,Therm             ,        ,         ,https://www.openstreetmap.org/way/345556341
+75,ITC               ,        ,         ,https://www.openstreetmap.org/node/2034491049

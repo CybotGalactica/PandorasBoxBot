@@ -1,5 +1,4 @@
-import java.io.File;
-import java.nio.file.Path;
+package org.nielsoverkamp.pandorabox.pbpb09.K9VS;
 
 public interface OCRProvider {
 
