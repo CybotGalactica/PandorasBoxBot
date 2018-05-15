@@ -1,4 +1,5 @@
-public class PosterMock implements PandoraWebsitePoster{
+public class WebsiteInteractor implements PandoraWebsitePoster{
+
     @Override
     public String attemptLogin(String username, String password) {
         return null;
@@ -6,31 +7,31 @@ public class PosterMock implements PandoraWebsitePoster{
 
     @Override
     public void postKillCode(Integer id, String code) {
-        System.out.println(String.format("Posted kill code: %1$2s", code));
+
     }
 
     @Override
     public void postPuzzleCode(Integer id, String code) {
-        System.out.println(String.format("Posted puzzle code: %1$2s", code));
+
     }
 
     @Override
     public String acquireKillCodeFromText(String text) {
-        return text;
+        return null;
     }
 
     @Override
     public String acquirePuzzleCodeFromText(String text) {
-        return text;
+        return null;
     }
 
     @Override
     public String getKillCodeArgumentDescription() {
-        return "description";
+        return null;
     }
 
     @Override
     public String getPuzzleCodeArgumentDescription() {
-        return "puzzledescription";
+        return null;
     }
 }

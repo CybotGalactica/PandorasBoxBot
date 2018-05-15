@@ -6,7 +6,6 @@ import com.google.api.services.vision.v1.Vision;
 import com.google.api.services.vision.v1.VisionScopes;
 import com.google.api.services.vision.v1.model.*;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -25,7 +24,7 @@ public class GCVision implements OCRProvider {
     private HashMap<String, String> config = new HashMap<>();
     private Vision vision;
 
-    public GCVision() throws OCRException {
+    GCVision() throws OCRException {
         try {
             GoogleCredential credential = GoogleCredential.getApplicationDefault().createScoped(VisionScopes.all());
 
