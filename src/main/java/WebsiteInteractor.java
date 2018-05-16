@@ -58,7 +58,6 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             Document doc = Jsoup.connect("https://www.iapandora.nl/killcode")
                                 .cookie("csrftoken", csrf)
                                 .cookie("sessionid", Database.getSessionToken(id))
-                                .header("Content-Type", "text/*")
                                 .header("Referer", "https://www.iapandora.nl/")
                                 .header("Host", "www.iapandora.nl")
                                 .header("X-CSRFToken", csrf)
@@ -67,6 +66,9 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                                 .requestBody("{\"kill_code\":\"" + code + "\",\"member_id\":\"" + Database.getKillerId(id) + "\"}")
                                 .ignoreHttpErrors(true)
                                 .post();
+            if (doc.text().startsWith("Unhandled content type")) {
+                return "Success!";
+            }
             return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
@@ -83,7 +85,6 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             Document doc = Jsoup.connect("https://www.iapandora.nl/puzzlecode")
                                 .cookie("csrftoken", csrf)
                                 .cookie("sessionid", Database.getSessionToken(id))
-                                .header("Content-Type", "text/*")
                                 .header("Referer", "https://www.iapandora.nl/")
                                 .header("Host", "www.iapandora.nl")
                                 .header("X-CSRFToken", csrf)
@@ -92,6 +93,9 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                                 .requestBody("{\"puzzle_code\":\"" + code + "\"}")
                                 .ignoreHttpErrors(true)
                                 .post();
+            if (doc.text().startsWith("Unhandled content type")) {
+                return "Success!";
+            }
             return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
