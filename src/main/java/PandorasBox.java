@@ -100,6 +100,7 @@ public class PandorasBox extends ModuleAdapter {
                             case QUERY_LOGOUT:
                                 Database.forget(id);
                                 sendForgetSuccessMessage(id);
+                                break;
                             default:
                                 ActionType type = Database.getActionType(id);
                                 switch (type) {
