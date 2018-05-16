@@ -65,6 +65,7 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                                 .header("X-Requested-With", "XMLHttpRequest")
                                 .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
                                 .requestBody("{\"kill_code\":\"" + code + "\",\"member_id\":\"" + Database.getKillerId(id) + "\"}")
+                                .ignoreHttpErrors(true)
                                 .post();
             return doc.text();
         } catch (IOException e) {
@@ -89,6 +90,7 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                                 .header("X-Requested-With", "XMLHttpRequest")
                                 .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
                                 .requestBody("{\"puzzle_code\":\"" + code + "\"}")
+                                .ignoreHttpErrors(true)
                                 .post();
             return doc.text();
         } catch (IOException e) {
@@ -97,9 +99,17 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
         }
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public String acquireKillCodeFromText(String text) {
-        String[] parts = text.split("\\s+");
+        String replaced = text.replaceAll("\\s+", " ");
+        for (Pattern killCodePattern : killPatterns) {
+            Matcher m = killCodePattern.matcher(replaced);
+            if (m.find()) {
+                return m.group(1);
+            }
+        }
+        String[] parts = replaced.split("\\s+");
         for (String part : parts) {
             if (part.length() == 10) {
                 return part;
@@ -108,9 +118,17 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
         return null;
     }
 
+    @SuppressWarnings("Duplicates")
     @Override
     public String acquirePuzzleCodeFromText(String text) {
-        String[] parts = text.split("\\s+");
+        String replaced = text.replaceAll("\\s+", " ");
+        for (Pattern puzzleCodePattern : puzzlePatterns) {
+            Matcher m = puzzleCodePattern.matcher(replaced);
+            if (m.find()) {
+                return m.group(1);
+            }
+        }
+        String[] parts = replaced.split("\\s+");
         for (String part : parts) {
             if (part.length() == 10) {
                 return part;

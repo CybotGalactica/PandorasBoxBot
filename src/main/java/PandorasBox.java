@@ -106,10 +106,21 @@ public class PandorasBox extends ModuleAdapter {
                                 switch (type) {
                                     case KILL:
                                         String killResponse = pandoraWebsitePoster.postKillCode(id, message.getText());
+                                        if (killResponse.equals("Server Error (500)")) {
+                                            sendSessionExpiredMessage(id);
+                                            Database.setLoginState(id, 1);
+                                            break;
+                                        }
                                         sendCodeSubmitResponse(id, killResponse);
                                         break;
                                     case PUZZLE:
                                         String puzzleResponse = pandoraWebsitePoster.postPuzzleCode(id, message.getText());
+                                        if (puzzleResponse.equals("Server Error (500)")) {
+                                            sendSessionExpiredMessage(id);
+                                            Database.setLoginState(id, 1);
+                                            break;
+                                        }
+                                        System.out.println(puzzleResponse);
                                         sendCodeSubmitResponse(id, puzzleResponse);
                                         break;
                                     case UNSET:
@@ -145,6 +156,11 @@ public class PandorasBox extends ModuleAdapter {
                                         break;
                                     }
                                     String killResponse = pandoraWebsitePoster.postKillCode(id, killCode);
+                                    if (killResponse.equals("Server Error (500)")) {
+                                        sendSessionExpiredMessage(id);
+                                        Database.setLoginState(id, 1);
+                                        break;
+                                    }
                                     sendCodeSubmitResponse(id, killResponse);
                                     break;
                                 case PUZZLE:
@@ -155,6 +171,11 @@ public class PandorasBox extends ModuleAdapter {
                                         break;
                                     }
                                     String puzzleResponse = pandoraWebsitePoster.postPuzzleCode(id, puzzleCode);
+                                    if (puzzleResponse.equals("Server Error (500)")) {
+                                        sendSessionExpiredMessage(id);
+                                        Database.setLoginState(id, 1);
+                                        break;
+                                    }
                                     sendCodeSubmitResponse(id, puzzleResponse);
                                     break;
                                 default:
@@ -254,6 +275,12 @@ public class PandorasBox extends ModuleAdapter {
         } else {
             sendMessage(id, response);
         }
+    }
+
+    private void sendSessionExpiredMessage(Integer id) {
+        sendMessage(id, "Your session seems to have expired.\nYou will have to login again...\n" +
+                                "\n" +
+                                "Username:");
     }
 
     private void sendActionFirstError(Integer id) {
