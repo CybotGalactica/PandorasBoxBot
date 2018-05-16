@@ -16,8 +16,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     private static final Gson gson = new GsonBuilder().create();
     private static final Pattern memberInTeam = Pattern.compile("'<option value=\"(\\d+)\">([^<]+)</option>' \\+");
-    private static final Pattern[] killPatterns = {Pattern.compile("[a-zA-Z0-9]{10}")};
-    private static final Pattern[] puzzlePatterns = {Pattern.compile(".*From\\s*:\\s*([a-zA-Z0-9]{15}).*")};
+    private static final Pattern[] killPatterns = {Pattern.compile("Personal\\s*code\\s*:\\s*([a-zA-Z0-9]{10})")};
+    private static final Pattern[] puzzlePatterns = {Pattern.compile("From\\s*:\\s*([a-zA-Z0-9]{15})")};
 
     @Override
     public String attemptLogin(String username, String password) {
@@ -58,6 +58,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             Document doc = Jsoup.connect("https://www.iapandora.nl/killcode")
                                 .cookie("csrftoken", csrf)
                                 .cookie("sessionid", Database.getSessionToken(id))
+                                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                                .header("Accept", "*/*")
                                 .header("Referer", "https://www.iapandora.nl/")
                                 .header("Host", "www.iapandora.nl")
                                 .header("X-CSRFToken", csrf)
@@ -65,10 +67,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                                 .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
                                 .requestBody("{\"kill_code\":\"" + code + "\",\"member_id\":\"" + Database.getKillerId(id) + "\"}")
                                 .ignoreHttpErrors(true)
+                                .ignoreContentType(true)
                                 .post();
-            if (doc.text().startsWith("Unhandled content type")) {
-                return "Success!";
-            }
             return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
@@ -85,6 +85,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             Document doc = Jsoup.connect("https://www.iapandora.nl/puzzlecode")
                                 .cookie("csrftoken", csrf)
                                 .cookie("sessionid", Database.getSessionToken(id))
+                                .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                                .header("Accept", "*/*")
                                 .header("Referer", "https://www.iapandora.nl/")
                                 .header("Host", "www.iapandora.nl")
                                 .header("X-CSRFToken", csrf)
@@ -92,10 +94,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                                 .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
                                 .requestBody("{\"puzzle_code\":\"" + code + "\"}")
                                 .ignoreHttpErrors(true)
+                                .ignoreContentType(true)
                                 .post();
-            if (doc.text().startsWith("Unhandled content type")) {
-                return "Success!";
-            }
             return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
