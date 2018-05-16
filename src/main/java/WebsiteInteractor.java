@@ -69,8 +69,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
+            return e.getMessage();
         }
-        return null;
     }
 
     @Override
@@ -92,8 +92,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
+            return e.getMessage();
         }
-        return null;
     }
 
     @Override
