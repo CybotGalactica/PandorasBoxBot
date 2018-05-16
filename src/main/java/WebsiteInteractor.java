@@ -4,9 +4,7 @@ import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import website.KillCode;
 import website.LoginResponse;
-import website.PuzzleCode;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -55,11 +53,20 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
     @Override
     public String postKillCode(Integer id, String code) {
         try {
-            KillCode killCode = new KillCode();
-            killCode.kill_code = code;
-            killCode.member_id = String.valueOf(Database.getKillerId(id));
-            Document response = Jsoup.connect("https://www.iapandora.nl/killcode").requestBody(gson.toJson(killCode)).post();
-            return response.text();
+            String csrf = getCSRFToken();
+
+            Document doc = Jsoup.connect("https://www.iapandora.nl/killcode")
+                                .cookie("csrftoken", csrf)
+                                .cookie("sessionid", Database.getSessionToken(id))
+                                .header("Content-Type", "application/json")
+                                .header("Referer", "https://www.iapandora.nl/")
+                                .header("Host", "www.iapandora.nl")
+                                .header("X-CSRFToken", csrf)
+                                .header("X-Requested-With", "XMLHttpRequest")
+                                .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
+                                .requestBody("{\"kill_code\":\"" + code + "\",\"member_id\":\"" + Database.getKillerId(id) + "\"}")
+                                .post();
+            return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -69,15 +76,24 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
     @Override
     public String postPuzzleCode(Integer id, String code) {
         try {
-            PuzzleCode puzzleCode = new PuzzleCode();
-            puzzleCode.puzzle_code = code;
-            Document response = Jsoup.connect("https://www.iapandora.nl/puzzlecode").requestBody(gson.toJson(puzzleCode)).post();
-            return response.text();
+            String csrf = getCSRFToken();
+
+            Document doc = Jsoup.connect("https://www.iapandora.nl/puzzlecode")
+                                .cookie("csrftoken", csrf)
+                                .cookie("sessionid", Database.getSessionToken(id))
+                                .header("Content-Type", "application/json")
+                                .header("Referer", "https://www.iapandora.nl/")
+                                .header("Host", "www.iapandora.nl")
+                                .header("X-CSRFToken", csrf)
+                                .header("X-Requested-With", "XMLHttpRequest")
+                                .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
+                                .requestBody("{\"puzzle_code\":\"" + code + "\"}")
+                                .post();
+            return doc.text();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
-
     }
 
     @Override
@@ -105,7 +121,19 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
     @Override
     public Map<String, Integer> getHumansInTeam(String sessionToken) {
         try {
-            Document doc = Jsoup.connect("https://www.iapandora.nl").get();
+            String csrf = getCSRFToken();
+
+            Document doc = Jsoup.connect("https://www.iapandora.nl")
+                                .cookie("csrftoken", csrf)
+                                .cookie("sessionid", sessionToken)
+                                .header("Connection", "keep-alive")
+                                .header("Referer", "https://www.iapandora.nl/")
+                                .header("Host", "www.iapandora.nl")
+                                .header("X-CSRFToken", csrf)
+                                .header("X-Requested-With", "XMLHttpRequest")
+                                .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
+                                .get();
+
             String js = doc.getElementsByTag("header").first().children().last().data();
 
             String[] lines = js.split("\n");
@@ -115,7 +143,7 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
                     continue;
                 }
                 Matcher matcher = memberInTeam.matcher(line.trim());
-                if (matcher.matches()) {
+                if (matcher.find()) {
                     users.put(matcher.group(2), Integer.parseInt(matcher.group(1)));
                 }
             }
@@ -124,5 +152,11 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static String getCSRFToken() throws IOException {
+        return Jsoup.connect("https://www.iapandora.nl/auth/")
+                    .method(Connection.Method.GET)
+                    .execute().cookie("csrftoken");
     }
 }

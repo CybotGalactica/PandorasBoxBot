@@ -84,6 +84,7 @@ public class PandorasBox extends ModuleAdapter {
                             Database.setLoginState(id, 1);
                             break;
                         }
+                        Database.setUsername(id, null);
                         Database.setSessionToken(id, sessionToken);
                         sendLoginSuccessAndSelectKillerMessage(id, sessionToken);
                         Database.setLoginState(id, 3);
@@ -116,6 +117,7 @@ public class PandorasBox extends ModuleAdapter {
                                         break;
                                 }
                         }
+                        break;
                     default:
                         Database.setLoginState(id, 1);
                         sendInitialMessage(id);
@@ -189,7 +191,9 @@ public class PandorasBox extends ModuleAdapter {
         sendMessage(id, "Welcome to the bot!\n" +
                                 "We do have to ask you to login to the Pandora website for this to work, but we promise you that we do not see your password and only use it to " +
                                 "optain a sesstion token, which we can afterwards use to submit codes without knowing your password.\n" +
-                                "You can always make us forget all data about you by clicking this button.", replyMarkup);
+                                "You can always make us forget all data about you by clicking this button.\n" +
+                                "You can find the source on github:\n" +
+                                "", replyMarkup);
         try {
             Thread.sleep(1_000);
         } catch (InterruptedException e) {
