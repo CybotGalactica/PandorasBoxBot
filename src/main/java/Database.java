@@ -174,4 +174,11 @@ class Database {
         connection.commit();
         connection.close();
     }
+
+    static void setKillerId(Integer id, int killerId) {
+
+    }
+    static int getKillerId(Integer id) {
+        return null;
+    }
 }
