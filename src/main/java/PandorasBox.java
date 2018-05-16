@@ -31,9 +31,9 @@ public class PandorasBox extends ModuleAdapter {
     private static final String NAME = "PBPB-09";
     private static final String VERSION = "0.0.1-SNAPSHOT";
     private static final String AUTHOR = "N.M. Overkamp - CFO CG";
-    private final String QUERY_KILL = "kill";
-    private final String QUERY_PUZZLE = "puzzle";
-    private final String QUERY_LOGOUT = "logout";
+    private final String QUERY_KILL = "Killcode";
+    private final String QUERY_PUZZLE = "Puzzlecode";
+    private final String QUERY_LOGOUT = "Logout and Forget me";
 
     private OCRProvider ocrProvider;
     private PandoraWebsitePoster pandoraWebsitePoster;
@@ -138,11 +138,23 @@ public class PandorasBox extends ModuleAdapter {
                             String text = ocrProvider.read(com.google.common.io.Files.toByteArray(new File(tempFile.toAbsolutePath().toString())));
                             switch (Database.getActionType(id)) {
                                 case KILL:
-                                    String killResponse = pandoraWebsitePoster.postKillCode(id, pandoraWebsitePoster.acquireKillCodeFromText(text));
+                                    String killCode = pandoraWebsitePoster.acquireKillCodeFromText(text);
+                                    if (killCode == null) {
+                                        System.out.println("No killCode in:" + text.replaceAll("\\s+", " "));
+                                        sendCantFindCodeMessage(id);
+                                        break;
+                                    }
+                                    String killResponse = pandoraWebsitePoster.postKillCode(id, killCode);
                                     sendCodeSubmitResponse(id, killResponse);
                                     break;
                                 case PUZZLE:
-                                    String puzzleResponse = pandoraWebsitePoster.postPuzzleCode(id, pandoraWebsitePoster.acquirePuzzleCodeFromText(text));
+                                    String puzzleCode = pandoraWebsitePoster.acquirePuzzleCodeFromText(text);
+                                    if (puzzleCode == null) {
+                                        System.out.println("No puzzlecode in:" + text.replaceAll("\\s+", " "));
+                                        sendCantFindCodeMessage(id);
+                                        break;
+                                    }
+                                    String puzzleResponse = pandoraWebsitePoster.postPuzzleCode(id, puzzleCode);
                                     sendCodeSubmitResponse(id, puzzleResponse);
                                     break;
                                 default:
@@ -154,7 +166,7 @@ public class PandorasBox extends ModuleAdapter {
                         }
                         break;
                     default:
-                        sendActionFirstError(id);
+                        sendLoginFirstMessage(id);
                         break;
                 }
             }
@@ -194,9 +206,6 @@ public class PandorasBox extends ModuleAdapter {
                                 "We promise you that we do not store your password use it to optain a sesstion token.\n" +
                                 "We can use that to submit codes without knowing your password.\n" +
                                 "Make us forget all data about you by clicking the button below.\n" +
-                                "You can find the source on github:\n" +
-                                "https://github.com/CybotGalactica/PandorasBoxBot/tree/feature-login\n" +
-                                "https://github.com/AnyTimeTraveler/telegrambots-framework\n" +
                                 "\n" +
                                 "Enjoy!\n" +
                                 "Simon Struck and Niels Overkamp", replyMarkup);
@@ -205,15 +214,15 @@ public class PandorasBox extends ModuleAdapter {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        sendMessage(id, "Please type in your username to begin logging into iapandora.nl:");
+        sendMessage(id, "Username:");
     }
 
     private void sendPasswordMessage(Integer id) {
-        sendMessage(id, "Now send your password:");
+        sendMessage(id, "Password:");
     }
 
     private void sendUsernameErrorMessage(Integer id) {
-        sendMessage(id, "Something must have gone wrong... Could you start again by typing in your username:");
+        sendMessage(id, "Something must have gone wrong...\n\nCould you start again by typing in your username:");
     }
 
     private void sendLoginErrorMessage(Integer id) {
@@ -259,6 +268,16 @@ public class PandorasBox extends ModuleAdapter {
         sendMessage(id, "Please tell me first what type of code this is!", keyboard);
     }
 
+    private void sendCantFindCodeMessage(Integer id) {
+        sendMessage(id, "Sorry, I could not find the code in the image.\nMaybe try again or type it by hand?");
+    }
+
+    private void sendLoginFirstMessage(Integer id) {
+        sendMessage(id, "Please login first.\n" +
+                                "\n" +
+                                "Username:");
+    }
+
     private void sendReadyMessage(Integer id) {
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
         keyboard.setOneTimeKeyboard(false);
@@ -268,7 +287,9 @@ public class PandorasBox extends ModuleAdapter {
         KeyboardRow secondRow = new KeyboardRow();
         secondRow.add(QUERY_LOGOUT);
         keyboard.setKeyboard(Arrays.asList(firstRow, secondRow));
-        sendMessage(id, "Great, you are now all set up!", keyboard);
+        sendMessage(id, "Great, you are now all set up!\n" +
+                                "\n" +
+                                "Please select the type of code that you want to submit and then either type the code or send us a photo of it.", keyboard);
     }
 
     private void sendMessage(Integer id, String text, ReplyKeyboard keyboard) {

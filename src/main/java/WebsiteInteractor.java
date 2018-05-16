@@ -16,8 +16,8 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     private static final Gson gson = new GsonBuilder().create();
     private static final Pattern memberInTeam = Pattern.compile("'<option value=\"(\\d+)\">([^<]+)</option>' \\+");
-    private static final Pattern[] killPatterns = {Pattern.compile("Personal\\s+code\\s*:\\s*([a-zA-Z0-9]{10})")};
-    private static final Pattern[] puzzlePatterns = {Pattern.compile("From\\s*:\\s*([a-zA-Z0-9]{15})")};
+    private static final Pattern[] killPatterns = {Pattern.compile("[a-zA-Z0-9]{10}")};
+    private static final Pattern[] puzzlePatterns = {Pattern.compile(".*From\\s*:\\s*([a-zA-Z0-9]{15}).*")};
 
     @Override
     public String attemptLogin(String username, String password) {
@@ -75,6 +75,7 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     @Override
     public String postPuzzleCode(Integer id, String code) {
+        System.out.println(code);
         try {
             String csrf = getCSRFToken();
 
@@ -98,10 +99,10 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     @Override
     public String acquireKillCodeFromText(String text) {
-        for (Pattern killCodePattern : killPatterns) {
-            Matcher m = killCodePattern.matcher(text);
-            if (m.find()) {
-                return m.group(1);
+        String[] parts = text.split("\\s+");
+        for (String part : parts) {
+            if (part.length() == 10) {
+                return part;
             }
         }
         return null;
@@ -109,10 +110,10 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     @Override
     public String acquirePuzzleCodeFromText(String text) {
-        for (Pattern puzzleCodePattern : puzzlePatterns) {
-            Matcher m = puzzleCodePattern.matcher(text);
-            if (m.find()) {
-                return m.group(1);
+        String[] parts = text.split("\\s+");
+        for (String part : parts) {
+            if (part.length() == 10) {
+                return part;
             }
         }
         return null;
