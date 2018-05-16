@@ -31,4 +31,5 @@ gen### Java template
 hs_err_pid*
 /build
 /.gradle
-database.sqlite
+*.sqlite
+*.json

@@ -91,16 +91,16 @@ public class PandorasBox extends ModuleAdapter {
                     case 4: // Login successful
                         switch (message.getText()) {
                             case QUERY_KILL:
-                                Database.setType(id, ActionType.KILL);
+                                Database.setActionType(id, ActionType.KILL);
                                 break;
                             case QUERY_PUZZLE:
-                                Database.setType(id, ActionType.PUZZLE);
+                                Database.setActionType(id, ActionType.PUZZLE);
                                 break;
                             case QUERY_LOGOUT:
                                 Database.forget(id);
                                 sendForgetSuccessMessage(id);
                             default:
-                                ActionType type = Database.getType(id);
+                                ActionType type = Database.getActionType(id);
                                 switch (type) {
                                     case KILL:
                                         String killResponse = pandoraWebsitePoster.postKillCode(id, message.getText());
@@ -133,7 +133,7 @@ public class PandorasBox extends ModuleAdapter {
                             Path tempFile = Files.createTempFile(fileId, "tmp");
                             FileUtils.copyURLToFile(new URL(sender.execute(new GetFile().setFileId(fileId)).getFileUrl(sender.getBotToken())), tempFile.toFile());
                             String text = ocrProvider.read(com.google.common.io.Files.toByteArray(new File(tempFile.toAbsolutePath().toString())));
-                            switch (Database.getType(id)) {
+                            switch (Database.getActionType(id)) {
                                 case KILL:
                                     String killResponse = pandoraWebsitePoster.postKillCode(id, pandoraWebsitePoster.acquireKillCodeFromText(text));
                                     sendCodeSubmitResponse(id, killResponse);
@@ -182,11 +182,19 @@ public class PandorasBox extends ModuleAdapter {
         InlineKeyboardMarkup replyMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
         InlineKeyboardButton button = new InlineKeyboardButton();
-        button.setText("Forget me again");
+        button.setText("Forget me");
         button.setCallbackData(QUERY_LOGOUT);
         buttons.add(Collections.singletonList(button));
         replyMarkup.setKeyboard(buttons);
-        sendMessage(id, "Welcome to the bot!\n//Message about not storing password, etc//", replyMarkup);
+        sendMessage(id, "Welcome to the bot!\n" +
+                                "We do have to ask you to login to the Pandora website for this to work, but we promise you that we do not see your password and only use it to " +
+                                "optain a sesstion token, which we can afterwards use to submit codes without knowing your password.\n" +
+                                "You can always make us forget all data about you by clicking this button.", replyMarkup);
+        try {
+            Thread.sleep(1_000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         sendMessage(id, "Please type in your username to begin logging into iapandora.nl:");
     }
 
@@ -214,18 +222,18 @@ public class PandorasBox extends ModuleAdapter {
             buttons.add(Collections.singletonList(button));
         }
         replyMarkup.setKeyboard(buttons);
-        sendMessage(id, "Congrats! We have logged you in, remembered the sessionToken and forgotten your password.\nPlease select Who you are now:", replyMarkup);
+        sendMessage(id, "Congrats! We have logged you in, remembered the sessionToken.\nPlease select Who you are now:", replyMarkup);
     }
 
     private void sendForgetSuccessMessage(Integer id) {
-        sendMessage(id, "I've successfully forgotten all about your existance.", new ReplyKeyboardRemove());
+        sendMessage(id, "I've successfully forgotten all about your existance. Send /start to begin using the bot again.", new ReplyKeyboardRemove());
     }
 
     private void sendCodeSubmitResponse(Integer id, String response) {
         if (response == null) {
             sendMessage(id, "Failed!\n");
         } else {
-            sendMessage(id, "Success!\n" + response);
+            sendMessage(id, response);
         }
     }
 

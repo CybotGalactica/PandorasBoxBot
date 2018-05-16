@@ -5,11 +5,10 @@ import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import website.KillCode;
+import website.LoginResponse;
 import website.PuzzleCode;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -19,37 +18,34 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     private static final Gson gson = new GsonBuilder().create();
     private static final Pattern memberInTeam = Pattern.compile("'<option value=\"(\\d+)\">([^<]+)</option>' \\+");
+    private static final Pattern[] killPatterns = {Pattern.compile("Personal\\s+code\\s*:\\s*([a-zA-Z0-9]{10})")};
+    private static final Pattern[] puzzlePatterns = {Pattern.compile("From\\s*:\\s*([a-zA-Z0-9]{15})")};
 
     @Override
     public String attemptLogin(String username, String password) {
         try {
+            Response initialPage = Jsoup.connect("https://www.iapandora.nl/auth/")
+                                        .method(Connection.Method.GET)
+                                        .execute();
+
             Response resp = Jsoup.connect("https://www.iapandora.nl/auth/endpoint/login")
-                                            .requestBody("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}\t")
-                                            .method(Connection.Method.POST)
-                                            .execute();
-            StringBuilder sb = new StringBuilder();
-            sb.append("Headers:\n");
-            for (Map.Entry<String, String> header : resp.headers().entrySet()) {
-                sb.append(header.getKey());
-                sb.append(" : ");
-                sb.append(header.getValue());
-                sb.append('\n');
+                                 .requestBody("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}\t")
+                                 .method(Connection.Method.POST)
+                                 .cookie("csrftoken", initialPage.cookie("csrftoken"))
+                                 .header("Content-Type", "application/json")
+                                 .header("DNT", "1")
+                                 .header("Connection", "keep-alive")
+                                 .header("Referer", "https://www.iapandora.nl/auth/")
+                                 .header("Host", "www.iapandora.nl")
+                                 .header("X-CSRFToken", initialPage.cookie("csrftoken"))
+                                 .header("X-Requested-With", "XMLHttpRequest")
+                                 .header("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:61.0) Gecko/20100101 Firefox/61.0")
+                                 .ignoreContentType(true)
+                                 .execute();
+            LoginResponse loginResponse = gson.fromJson(resp.body(), LoginResponse.class);
+            if (loginResponse.logged_in) {
+                return resp.cookie("sessionid");
             }
-            sb.append('\n');
-            for (Map.Entry<String, String> cookie : resp.cookies().entrySet()) {
-                sb.append(cookie.getKey());
-                sb.append(" : ");
-                sb.append(cookie.getValue());
-                sb.append('\n');
-            }
-            sb.append('\n');
-            sb.append(resp.body());
-            Files.write(new File("./output.log").toPath(), sb.toString().getBytes());
-            return "";
-//            LoginResponse loginResponse = gson.fromJson(doc.wholeText(), LoginResponse.class);
-//            if (loginResponse.logged_in) {
-//                return "";
-//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,11 +82,23 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
 
     @Override
     public String acquireKillCodeFromText(String text) {
+        for (Pattern killCodePattern : killPatterns) {
+            Matcher m = killCodePattern.matcher(text);
+            if (m.find()) {
+                return m.group(1);
+            }
+        }
         return null;
     }
 
     @Override
     public String acquirePuzzleCodeFromText(String text) {
+        for (Pattern puzzleCodePattern : puzzlePatterns) {
+            Matcher m = puzzleCodePattern.matcher(text);
+            if (m.find()) {
+                return m.group(1);
+            }
+        }
         return null;
     }
 

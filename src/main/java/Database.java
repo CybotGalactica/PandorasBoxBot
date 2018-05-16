@@ -16,6 +16,8 @@ class Database {
     private static PreparedStatement qDeleteSessionToken;
     private static PreparedStatement qSetActionType;
     private static PreparedStatement qGetActionType;
+    private static PreparedStatement qSetKillerId;
+    private static PreparedStatement qGetKillerId;
 
 
     static {
@@ -32,7 +34,8 @@ class Database {
                                           "  state    INTEGER,\n" +
                                           "  username TEXT,\n" +
                                           "  sessionToken    TEXT,\n" +
-                                          "  actionType     INTEGER\n" +
+                                          "  actionType     INTEGER,\n" +
+                                          "  killerId     INTEGER\n" +
                                           ");");
                 System.err.println("Database was missing. Created one.");
             }
@@ -48,6 +51,8 @@ class Database {
             qDeleteSessionToken = connection.prepareStatement("UPDATE users SET sessionToken = '' WHERE id = ?");
             qSetActionType = connection.prepareStatement("UPDATE users SET actionType = ? WHERE id = ?;");
             qGetActionType = connection.prepareStatement("SELECT actionType FROM users WHERE id = ?");
+            qSetKillerId = connection.prepareStatement("UPDATE users SET killerId = ? WHERE id = ?;");
+            qGetKillerId = connection.prepareStatement("SELECT killerId FROM users WHERE id = ?");
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -57,13 +62,13 @@ class Database {
         try {
             qCheckUserExists.setInt(1, id);
             ResultSet userExistsResultSet = qCheckUserExists.executeQuery();
-            if (!userExistsResultSet.first() || userExistsResultSet.getInt(1) == 0) {
+            if (!userExistsResultSet.next() || userExistsResultSet.getInt(1) == 0) {
                 qCreateUser.setInt(1, id);
                 qCreateUser.executeUpdate();
             }
             qGetLoginState.setInt(1, id);
             ResultSet loginStateResultSet = qGetLoginState.executeQuery();
-            loginStateResultSet.first();
+            loginStateResultSet.next();
             return loginStateResultSet.getInt("state");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,7 +90,7 @@ class Database {
         try {
             qGetUsername.setInt(1, id);
             ResultSet resultSet = qGetUsername.executeQuery();
-            if (resultSet.first()) {
+            if (resultSet.next()) {
                 return resultSet.getString("username");
             }
 
@@ -109,7 +114,7 @@ class Database {
         try {
             qGetSessionToken.setInt(1, id);
             ResultSet resultSet = qGetSessionToken.executeQuery();
-            if (resultSet.first()) {
+            if (resultSet.next()) {
                 return resultSet.getString("sessionToken");
             }
         } catch (SQLException e) {
@@ -138,7 +143,7 @@ class Database {
         }
     }
 
-    static void setType(Integer id, ActionType type) {
+    static void setActionType(Integer id, ActionType type) {
         try {
             qSetActionType.setInt(1, type.toInt());
             qSetActionType.setInt(2, id);
@@ -148,11 +153,11 @@ class Database {
         }
     }
 
-    static ActionType getType(Integer id) {
+    static ActionType getActionType(Integer id) {
         try {
             qGetActionType.setInt(1, id);
             ResultSet resultSet = qGetActionType.executeQuery();
-            if (resultSet.first()) {
+            if (resultSet.next()) {
                 return ActionType.fromInt(resultSet.getInt("actionType"));
             }
         } catch (SQLException e) {
@@ -176,9 +181,25 @@ class Database {
     }
 
     static void setKillerId(Integer id, int killerId) {
-
+        try {
+            qSetKillerId.setInt(1, killerId);
+            qSetKillerId.setInt(2, id);
+            qSetKillerId.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+
     static int getKillerId(Integer id) {
-        return null;
+        try {
+            qGetKillerId.setInt(1, id);
+            ResultSet resultSet = qGetKillerId.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("killerId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }
