@@ -188,12 +188,17 @@ public class PandorasBox extends ModuleAdapter {
         button.setCallbackData(QUERY_LOGOUT);
         buttons.add(Collections.singletonList(button));
         replyMarkup.setKeyboard(buttons);
-        sendMessage(id, "Welcome to the bot!\n" +
-                                "We do have to ask you to login to the Pandora website for this to work, but we promise you that we do not see your password and only use it to " +
-                                "optain a sesstion token, which we can afterwards use to submit codes without knowing your password.\n" +
-                                "You can always make us forget all data about you by clicking this button.\n" +
+        sendMessage(id, "Welcome to the PandoraCodeBot!\n" +
+                                "To use it, you will have to login to the Pandora website.\n" +
+                                "We promise you that we do not store your password use it to optain a sesstion token.\n" +
+                                "We can use that to submit codes without knowing your password.\n" +
+                                "Make us forget all data about you by clicking the button below.\n" +
                                 "You can find the source on github:\n" +
-                                "", replyMarkup);
+                                "https://github.com/CybotGalactica/PandorasBoxBot/tree/feature-login\n" +
+                                "https://github.com/AnyTimeTraveler/telegrambots-framework\n" +
+                                "\n" +
+                                "Enjoy!\n" +
+                                "Simon Struck and Niels Overkamp", replyMarkup);
         try {
             Thread.sleep(1_000);
         } catch (InterruptedException e) {
