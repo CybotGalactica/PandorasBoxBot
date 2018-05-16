@@ -105,7 +105,7 @@ public class WebsiteInteractor implements PandoraWebsitePoster {
     @Override
     public Map<String, Integer> getHumansInTeam(String sessionToken) {
         try {
-            Document doc = Jsoup.connect("").get();
+            Document doc = Jsoup.connect("https://www.iapandora.nl").get();
             String js = doc.getElementsByTag("header").first().children().last().data();
 
             String[] lines = js.split("\n");
